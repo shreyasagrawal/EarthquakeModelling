@@ -2,7 +2,6 @@
 
 Predictive Models for Math Assessment Proficiency and Reading Assessment Proficiency in Iowa K-12 Schools
 
-Abstract
 Proficiency assessments are utilized in schools to test student’s competency in specific skills, but there has been previous 
 research showing that proficiency scores are correlated with factors like poverty. If so, it is important to recognize that 
 these factors exist so that I can find a way to reduce their influence on student success. In this project, I seek to make models 
