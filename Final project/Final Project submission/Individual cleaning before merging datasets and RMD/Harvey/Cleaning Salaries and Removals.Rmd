@@ -1,0 +1,171 @@
+---
+title: "Cleaning removals"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(readr)
+X2013_2014_Iowa_Teacher_Information <- read.csv("~/Final Project/Data Cleaning Salaries /2013-2014 Iowa Teacher Information.csv")
+
+View(X2013_2014_Iowa_Teacher_Information)
+TeachersClean2013 <- dplyr::select(X2013_2014_Iowa_Teacher_Information, District, `District Name`, `Full-Time (FT)`, `Part-Time (PT)`, Average, `Average District Experience...24`, `FT Teacher Average Age`)
+
+X2014_2015_Iowa_Teacher_Information <- read.csv("~/Final Project/Data Cleaning Salaries /2014-2015 Iowa Teacher Information.csv")
+
+TeachersClean2014 <- dplyr::select(X2014_2015_Iowa_Teacher_Information, District, `District Name`, `Full-Time (FT)`, `Part-Time (PT)`, Average, `Average District Experience...24`, `FT Teacher Average Age`)
+
+X2015_2016_Iowa_Teacher_Information <- read.csv("~/Final Project/Data Cleaning Salaries /2015-2016 Iowa Teacher Information.csv")
+
+TeachersClean2015 <- dplyr::select(X2015_2016_Iowa_Teacher_Information, District, `District Name`, `Full-Time (FT)`, `Part-Time (PT)`, Average, `Average District Experience...24`, `FT Teacher Average Age`)
+
+X2016_2017_Iowa_Teacher_Information <- read.csv("~/Final Project/Data Cleaning Salaries /2016-2017 Iowa Teacher Information.csv")
+
+TeachersClean2016 <- dplyr::select(X2016_2017_Iowa_Teacher_Information, District, `District Name`, `Full-Time (FT)`, `Part-Time (PT)`, Average, `Average District Experience...24`, `FT Teacher Average Age`)
+
+X2017_2018_Iowa_Teacher_Information <- read.csv("~/Final Project/Data Cleaning Salaries /2017-2018 Iowa Teacher Information.csv")
+
+TeachersClean2017 <- dplyr::select(X2017_2018_Iowa_Teacher_Information, c(3, 4, 7, 8, 14, 25, 27))
+
+X2018_2019_Iowa_Teacher_Information <- read.csv("~/Final Project/Data Cleaning Salaries /2018-2019 Iowa Teacher Information.csv")
+
+TeachersClean2018 <- dplyr::select(X2018_2019_Iowa_Teacher_Information, c(3, 4, 7, 8, 14, 25, 27))
+
+view(TeachersClean2018)
+view(TeachersClean2014)
+
+TeachersClean2018$`Number of Full-Time (FT) Teachers/Teacher Leaders` <- as.numeric(TeachersClean2018$`Number of Full-Time (FT) Teachers/Teacher Leaders`)
+
+##TeachersClean2018b <- dplyr::rename(TeachersClean2018, "Full-Time(FT)" = "Number of Full-Time(FT) Teachers/Teacher Leaders", "Part-Time (PT)"= "Number of Part-Time (PT) Teachers/Teacher Leaders", "Average"= "FT Teacher/Teacher Leader Average Regular Salary", "Average Experience" = "FT Teacher/Teacher Leader Average District Experience", "Average Age"= "FT Teacher/Teacher Leader Averge Age")
+
+names(TeachersClean2013)[5] <- 'Average Salary'
+names(TeachersClean2013)[6] <- 'Average Experience'
+names(TeachersClean2013)[7] <- 'Average Age'
+TeachersClean2013 <- mutate(TeachersClean2013, "Year" =  "13-14" )
+
+
+names(TeachersClean2014)[5] <- 'Average Salary'
+names(TeachersClean2014)[6] <- 'Average Experience'
+names(TeachersClean2014)[7] <- 'Average Age' 
+TeachersClean2014 <- mutate(TeachersClean2014, "Year" = "14-15")
+
+names(TeachersClean2015)[5] <- 'Average Salary'
+names(TeachersClean2015)[6] <- 'Average Experience'
+names(TeachersClean2015)[7] <- 'Average Age' 
+TeachersClean2015 <- mutate(TeachersClean2015, "Year" = "15-16")
+
+names(TeachersClean2016)[5] <- 'Average Salary'
+names(TeachersClean2016)[6] <- 'Average Experience'
+names(TeachersClean2016)[7] <- 'Average Age' 
+TeachersClean2016 <- mutate(TeachersClean2016, "Year" = "16-17")
+
+names(TeachersClean2017)[3] <- 'Full-Time (FT)'
+names(TeachersClean2017)[4] <- 'Part-Time (PT)'
+names(TeachersClean2017)[5] <- 'Average Salary'
+names(TeachersClean2017)[6] <- 'Average Experience'
+names(TeachersClean2017)[7] <- 'Average Age' 
+TeachersClean2017 <- mutate(TeachersClean2017, "Year" = "17-18")
+
+names(TeachersClean2018)[3] <- 'Full-Time (FT)'
+names(TeachersClean2018)[4] <- 'Part-Time (PT)'
+names(TeachersClean2018)[5] <- 'Average Salary'
+names(TeachersClean2018)[6] <- 'Average Experience'
+names(TeachersClean2018)[7] <- 'Average Age' 
+TeachersClean2018 <- mutate(TeachersClean2018, "Year" = "18-19")
+
+
+IATeachersInfo_2013_to_2018 <- rbind(TeachersClean2013, TeachersClean2014, TeachersClean2015, TeachersClean2016, TeachersClean2017, TeachersClean2018)
+
+write.csv(IATeachersInfo_2013_to_2018, "Final Project/Data Cleaning Salaries /IATeachersInfoCleaned.csv")
+
+```
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(readr)
+
+X2013_2014_Iowa_Public_School_Unilateral_Removals <- read_csv("Final Project/Data Cleaning Removals /2013-2014 Iowa Public School Unilateral Removals.csv")
+
+X2014_15_Iowa_Public_School_Unilateral_Removals <- read_csv("Final Project/Data Cleaning Removals /2014-15 Iowa Public School Unilateral Removals.csv")
+
+X2015_2016_Iowa_Public_School_Unilateral_Removals <- read_csv("Final Project/Data Cleaning Removals /2015-2016 Iowa Public School Unilateral Removals.csv")
+
+X2016_17_Iowa_Public_School_Unilateral_Removals <- read_csv("Final Project/Data Cleaning Removals /2016-17 Iowa Public School Unilateral Removals.csv")
+
+X2017_18_Iowa_Public_School_Unilateral_Removals <- read_csv("Final Project/Data Cleaning Removals /2017-18 Iowa Public School Unilateral Removals.csv")
+
+X2018_19_Iowa_Public_School_Unilateral_Removals <- read_csv("Final Project/Data Cleaning Removals /2018-19 Iowa Public School Unilateral Removals.csv") 
+```
+
+```{r}
+names(X2013_2014_Iowa_Public_School_Unilateral_Removals)[1] <-  "District"
+names(X2013_2014_Iowa_Public_School_Unilateral_Removals)[2] <- "District Name"
+
+
+names(X2014_15_Iowa_Public_School_Unilateral_Removals)[1]<-  "District"
+names(X2014_15_Iowa_Public_School_Unilateral_Removals)[2]<- "District Name"
+names(X2014_15_Iowa_Public_School_Unilateral_Removals)[5] <- "Total Out of School Suspensions"
+
+
+
+names(X2015_2016_Iowa_Public_School_Unilateral_Removals)[1] <- "District"
+names(X2015_2016_Iowa_Public_School_Unilateral_Removals)[2] <- "District Name"
+names(X2015_2016_Iowa_Public_School_Unilateral_Removals)[3] <- "Total Expulsions"
+names(X2015_2016_Iowa_Public_School_Unilateral_Removals)[4] <- "Total In-School Suspensions"
+names(X2015_2016_Iowa_Public_School_Unilateral_Removals)[5] <- "Total Out of School Suspensions"
+
+names(X2016_17_Iowa_Public_School_Unilateral_Removals)[2]<- "District Name"
+names(X2017_18_Iowa_Public_School_Unilateral_Removals)[2]<- "District Name"
+names(X2018_19_Iowa_Public_School_Unilateral_Removals)[2] <- "District Name" 
+
+X2015_2016_Iowa_Public_School_Unilateral_Removals <- X2015_2016_Iowa_Public_School_Unilateral_Removals[ -c(1,2,329,330),]
+
+X2015_2016_Iowa_Public_School_Unilateral_Removals$`Total Expulsions` <- as.numeric(X2015_2016_Iowa_Public_School_Unilateral_Removals$`Total Expulsions`)
+
+X2015_2016_Iowa_Public_School_Unilateral_Removals$`Total In-School Suspensions` <- as.numeric(X2015_2016_Iowa_Public_School_Unilateral_Removals$`Total In-School Suspensions`)
+
+X2015_2016_Iowa_Public_School_Unilateral_Removals$District <- as.numeric(X2015_2016_Iowa_Public_School_Unilateral_Removals$District )
+
+X2015_2016_Iowa_Public_School_Unilateral_Removals$`Total Out of School Suspensions` <- as.numeric(X2015_2016_Iowa_Public_School_Unilateral_Removals$`Total Out of School Suspensions`)
+```
+
+```{r}
+X2013_2014_Iowa_Public_School_Unilateral_Removals<- mutate(X2013_2014_Iowa_Public_School_Unilateral_Removals, "Year" = "13-14")
+X2014_15_Iowa_Public_School_Unilateral_Removals<- mutate(X2014_15_Iowa_Public_School_Unilateral_Removals, "Year" = "14-15")
+X2015_2016_Iowa_Public_School_Unilateral_Removals<- mutate(X2015_2016_Iowa_Public_School_Unilateral_Removals, "Year" = "15-16")
+X2016_17_Iowa_Public_School_Unilateral_Removals <- mutate(X2016_17_Iowa_Public_School_Unilateral_Removals, "Year" = "16-17")
+X2017_18_Iowa_Public_School_Unilateral_Removals<- mutate(X2017_18_Iowa_Public_School_Unilateral_Removals, "Year" = "17-18")
+X2018_19_Iowa_Public_School_Unilateral_Removals<- mutate(X2018_19_Iowa_Public_School_Unilateral_Removals, "Year" = "18-19")
+
+RemovalsCleaned <- rbind(X2013_2014_Iowa_Public_School_Unilateral_Removals, X2014_15_Iowa_Public_School_Unilateral_Removals, X2015_2016_Iowa_Public_School_Unilateral_Removals, X2016_17_Iowa_Public_School_Unilateral_Removals, X2017_18_Iowa_Public_School_Unilateral_Removals, X2018_19_Iowa_Public_School_Unilateral_Removals)
+view(RemovalsCleaned)
+```
+
+
+```{r}
+write.csv(RemovalsCleaned, "~/Final Project/Data Cleaning Removals /SchoolRemovalsCleaned.csv")
+```
+
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(readr)
+SchoolRemovalsCleaned <- read_csv("Final Project/Data Cleaning Removals /SchoolRemovalsCleaned.csv")
+
+IATeachersInfoCleaned <- read_csv("Final Project/Data Cleaning Salaries /IATeachersInfoCleaned.csv")
+
+SchoolRemovalsCleaned <- SchoolRemovalsCleaned [-c(1,3)]
+IATeachersInfoCleaned <- IATeachersInfoCleaned [ -c(1, 3)]
+
+Removals_and_Salaries <- full_join(SchoolRemovalsCleaned, IATeachersInfoCleaned, by = c("District", "Year"))
+
+write.csv(Removals_and_Salaries, "~/Final Project/Removals_and_Salaries.csv")
+```

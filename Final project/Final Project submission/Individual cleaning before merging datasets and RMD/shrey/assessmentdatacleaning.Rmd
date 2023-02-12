@@ -1,0 +1,117 @@
+---
+title: "FinalProj"
+author: "ShreyHarveySofieAndrea"
+date: "4/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+require(tidyr)
+```
+
+```{r}
+math13 = read.csv("~/projects/finalProject/data/2013_math.csv")
+reading13 = read.csv("~/projects/finalProject/data/2013_reading.csv")
+math14 = read.csv("~/projects/finalProject/data/2014_math.csv")
+reading14 = read.csv("~/projects/finalProject/data/2014_reading.csv")
+math15 = read.csv("~/projects/finalProject/data/2015_math.csv")
+reading15 = read.csv("~/projects/finalProject/data/2015_reading.csv")
+math16 = read.csv("~/projects/finalProject/data/2016_math.csv")
+reading16 = read.csv("~/projects/finalProject/data/2016_reading.csv")
+math17 = read.csv("~/projects/finalProject/data/2017_math.csv")
+reading17 = read.csv("~/projects/finalProject/data/2017_reading.csv")
+math18 = read.csv("~/projects/finalProject/data/2018_math.csv")
+reading18 = read.csv("~/projects/finalProject/data/2018_reading.csv")
+```
+
+```{r}
+#changing col names as needed
+colnames(math13) <- c("County", "County-Name", "AEA", "District", "District-Name", "Math.NotProficient", "Math.Proficient", "Math.TotalTested", "Math.PerProficient")
+colnames(math14) <- c("County", "County-Name", "AEA", "District", "District-Name", "Math.NotProficient", "Math.Proficient", "Math.TotalTested", "Math.PerProficient")
+colnames(math15) <- c("County", "County-Name", "AEA", "District", "District-Name", "Math.NotProficient", "Math.Proficient", "Math.TotalTested", "Math.PerProficient")
+colnames(math16) <- c("County", "County-Name", "AEA", "District", "District-Name", "Math.NotProficient", "Math.Proficient", "Math.TotalTested", "Math.PerProficient")
+colnames(math17) <- c("County", "County-Name", "AEA", "District", "District-Name", "Math.NotProficient", "Math.Proficient", "Math.TotalTested", "Math.PerProficient")
+colnames(math18) <- c("County", "County-Name", "AEA", "District", "District-Name", "Math.NotProficient", "Math.Proficient", "Math.TotalTested", "Math.PerProficient")
+
+colnames(reading13) <- c("County", "County-Name", "AEA", "District", "District-Name", "Reading.NotProficient", "Reading.Proficient", "Reading.TotalTested", "Reading.PerProficient")
+colnames(reading14) <- c("County", "County-Name", "AEA", "District", "District-Name", "Reading.NotProficient", "Reading.Proficient", "Reading.TotalTested", "Reading.PerProficient")
+colnames(reading15) <- c("County", "County-Name", "AEA", "District", "District-Name", "Reading.NotProficient", "Reading.Proficient", "Reading.TotalTested", "Reading.PerProficient")
+colnames(reading16) <- c("County", "County-Name", "AEA", "District", "District-Name", "Reading.NotProficient", "Reading.Proficient", "Reading.TotalTested", "Reading.PerProficient")
+colnames(reading17) <- c("County", "County-Name", "AEA", "District", "District-Name", "Reading.NotProficient", "Reading.Proficient", "Reading.TotalTested", "Reading.PerProficient")
+colnames(reading18) <- c("County", "County-Name", "AEA", "District", "District-Name", "Reading.NotProficient", "Reading.Proficient", "Reading.TotalTested", "Reading.PerProficient")
+
+```
+
+```{r}
+#standardizing the district code column since we are merging by it
+math13$District <- as.character(math13$District)
+math14$District <- as.character(math14$District)
+math15$District <- as.character(math15$District)
+math16$District <- as.character(math16$District)
+math17$District <- as.character(math17$District)
+math18$District <- as.character(math18$District)
+reading13$District <- as.character(reading13$District)
+reading14$District <- as.character(reading14$District)
+reading15$District <- as.character(reading15$District)
+reading16$District <- as.character(reading16$District)
+reading17$District <- as.character(reading17$District)
+reading18$District <- as.character(reading18$District)
+
+```
+
+```{r}
+#removing AEA column since not relevant
+math13 = math13[-c(3)]
+math14 = math14[-c(3)]
+math15 = math15[-c(3)]
+math16 = math16[-c(3)]
+math17 = math17[-c(3)]
+math18 = math18[-c(3)]
+reading13 = reading13[-c(3)]
+reading14 = reading14[-c(3)]
+reading15 = reading15[-c(3)]
+reading16 = reading16[-c(3)]
+reading17 = reading17[-c(3)]
+reading18 = reading18[-c(3)]
+```
+
+```{r}
+#merging joining math and reading data for each year
+assessment13 = dplyr::inner_join(math13, reading13, by = c("County", "County-Name", "District", "District-Name") )
+assessment14 = dplyr::inner_join(math14, reading14, by = c("County", "County-Name", "District", "District-Name") )
+assessment15 = dplyr::inner_join(math15, reading15, by = c("County", "County-Name", "District", "District-Name") )
+assessment16 = dplyr::inner_join(math16, reading16, by = c("County", "County-Name", "District", "District-Name") )
+assessment17 = dplyr::inner_join(math17, reading17, by = c("County", "County-Name", "District", "District-Name") )
+assessment18 = dplyr::inner_join(math18, reading18, by = c("County", "County-Name", "District", "District-Name") )
+```
+
+```{r}
+#joining the data sets using bind_rows and bind_cols from dlpyr package
+
+assessment <- bind_rows(bind_cols(assessment13, Year = "13-14"), bind_cols(assessment14, Year = "14-15"), bind_cols(assessment15, Year = "15-16"),
+                     bind_cols(assessment16, Year = "16-17"), bind_cols(assessment17, Year = "17-18"), bind_cols(assessment18, Year = "18-19"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

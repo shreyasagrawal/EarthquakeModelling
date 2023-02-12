@@ -1,0 +1,118 @@
+---
+title: "IowaDataCleaning"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+#read in data for enrollment (free/reduced lunch cleaning further down)
+
+enroll2013 <- read_csv("data science/2013-2014 Iowa Public School PreK-12 Enrollments by District, Grade, Race and Gender.csv")
+enroll2014 <- read_csv("data science/2014-2015 Iowa Public School District PreK-12 Enrollments by District, Grade, Race and Gender.csv")
+enroll2015 <- read_csv("data science/2015-2016 Iowa Public School District PreK-12 Enrollments by District, Grade, Race and Gender.csv")
+enroll2016 <- read_csv("data science/2016-2017 Iowa Public School District PreK-12 Enrollments by District, Grade, Race and Gender.csv")
+enroll2017 <- read_csv("data science/2017-2018 Iowa Public School District PreK-12 Enrollments by District, Grade, Race and Gender.csv")
+enroll2018 <- read_csv("data science/2018-2019 Iowa Public School District PreK-12 Enrollments by District, Grade, Race and Gender.csv")
+```
+
+```{r}
+#add year column
+enroll2013b <- mutate(enroll2013, year = "13-14")
+enroll2013b <- select(enroll2013b, 4:45)
+enroll2013b <- slice(enroll2013b, 1:346)
+
+enroll2014b <- mutate(enroll2014, year = "14-15")
+enroll2014b <- select(enroll2014b, 4:45)
+enroll2014b <- slice(enroll2014b, 1:338)
+enroll2014b <- rename(enroll2014b, c("Dist" = "District", "PK" = "pk", "K" = "kg"))
+
+enroll2015b <- mutate(enroll2015, year = "15-16")
+enroll2015b <- select(enroll2015b, 4:45)
+enroll2015b <- slice(enroll2015b, 1:336)
+enroll2015b <- rename(enroll2015b, c("Dist" = "DISTRICT NUMBER", "District Name" = "DISTRICT NAME", "K" = "KG", "K-12 Enrollment" = "Total K12", "Total Enrollment" = "Total PK12", "Hispanic Total" = "Total Hispanic"))
+
+enroll2016b <- mutate(enroll2016, year = "16-17")
+enroll2016b <- select(enroll2016b, 4:45)
+enroll2016b <- slice(enroll2016b, 1:333)
+enroll2016b <- rename(enroll2016b, c("Dist" = "DISTRICT NUMBER", "District Name" = "DISTRICT NAME", "K" = "KG", "K-12 Enrollment" = "Total K12", "Total Enrollment" = "Total PK12", "Hispanic Total" = "Total Hispanic"))
+
+enroll2017b <- mutate(enroll2017, year = "17-18")
+enroll2017b <- select(enroll2017b, 4:45)
+enroll2017b <- slice(enroll2017b, 1:333)
+enroll2017b <- rename(enroll2017b, c("Dist" = "DISTRICT NUMBER", "District Name" = "DISTRICT NAME", "K" = "KG", "K-12 Enrollment" = "Total K12", "Total Enrollment" = "Total PK12"))
+
+enroll2018b <- mutate(enroll2018, year = "18-19")
+enroll2018b <- select(enroll2018b, 4:45)
+enroll2018b <- slice(enroll2018b, 1:330)
+enroll2018b <- rename(enroll2018b, c("Dist" = "DISTRICT NUMBER", "District Name" = "DISTRICT NAME", "K" = "KG", "K-12 Enrollment" = "Total K12", "Total Enrollment" = "Total PK12"))
+```
+
+```{r}
+#make one big dataframe
+enrollment <- bind_rows(enroll2013b, enroll2014b, enroll2015b, enroll2016b, enroll2017b, enroll2018b)
+
+#Select Relevant Rows
+enrollment2 <- select(enrollment, c(1, 2, 17, 18, 21, 24, 27, 30, 33, 36, 39, 40, 41, 42))
+
+#create percentage rows
+enrollment3 <- mutate(enrollment2, "Percent Hispanic" = (`Hispanic Total`/`Total Enrollment`)*100, "Percent Native American" = (`Native American Total`/`Total Enrollment`)*100, "Percent Asian" = (`Asian Total`/`Total Enrollment`)*100, "Percent Black" = (`Black Total`/`Total Enrollment`)*100, "Percent White" = (`White Total`/`Total Enrollment`)*100, "Percent Multi-Race" = (`Multi-Race Total`/`Total Enrollment`)*100, "Percent Male" = (`Total Male`/`Total Enrollment`)*100, "Percent Female" = (`Total Female`/`Total Enrollment`)*100)
+
+#remove total numeric rows
+finalenrollment <- select(enrollment3, c(1, 2, 3, 4, 14:22))
+
+```
+
+```{r}
+#Import Free/Reduced Price Lunch Datasets and get rid of excess rows/columns
+
+Lunch2013 <- read_csv("data science/2013-14 Iowa Public School K-12 Students Eligible for Free and Reduced-Price Lunch by District.csv")
+Lunch2013b <- select(Lunch2013, c(3, 9))
+Lunch2013b <- slice(Lunch2013b, 2:347)
+Lunch2013b$`Free or Reduced Price Lunch` <- str_replace(Lunch2013b$`Free or Reduced Price Lunch`, "\\%", "" )
+Lunch2013b$`Free or Reduced Price Lunch` <- as.numeric(Lunch2013b$`Free or Reduced Price Lunch`)
+
+
+Lunch2014 <- read_csv("data science/2014-15 Iowa Public School K-12 Students Eligible for Free and Reduced-Price Lunch by District v2.csv")
+Lunch2014b <- select(Lunch2014, c(3, 9))
+Lunch2014b <- slice(Lunch2014b, 1:338)
+
+Lunch2015 <- read_csv("data science/2015-16 Iowa Public School K-12 Students Eligible for Free and Reduced-Price Lunch by District.csv")
+Lunch2015b <- select(Lunch2015, c(3, 9))
+Lunch2015b <- slice(Lunch2015b, 1:335)
+
+Lunch2016 <- read_csv("data science/2016-17 Iowa Public School K-12 Students Eligible for Free and Reduced-Price Lunch by District.csv")
+Lunch2016b <- select(Lunch2016, c(3, 9))
+Lunch2016b <- slice(Lunch2016b, 1:333)
+
+Lunch2017 <- read_csv("data science/2017-18 Iowa Public School K-12 Students Eligible for Free and Reduced-Price Lunch by District.csv")
+Lunch2017b <- select(Lunch2017, c(3, 9))
+Lunch2017b <- slice(Lunch2017b, 1:333)
+
+Lunch2018 <- read_csv("data science/2018-19 Iowa Public School K-12 Students Eligible for Free and Reduced-Price Lunch by District updated.csv")
+Lunch2018b <- select(Lunch2018, c(3, 9))
+Lunch2018b <- slice(Lunch2018b, 1:330)
+```
+
+```{r}
+#Add year columns
+Lunch2013c <- mutate(Lunch2013b, year = "13-14")
+Lunch2014c <- mutate(Lunch2014b, year = "14-15")
+Lunch2015c <- mutate(Lunch2015b, year = "15-16")
+Lunch2016c <- mutate(Lunch2016b, year = "16-17")
+Lunch2017c <- mutate(Lunch2017b, year = "17-18")
+Lunch2018c <- mutate(Lunch2018b, year = "18-19")
+```
+
+```{r}
+AllLunch <- bind_rows(Lunch2013c, Lunch2014c, Lunch2015c, Lunch2016c, Lunch2017c, Lunch2018c)
+```

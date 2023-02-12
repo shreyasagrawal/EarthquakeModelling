@@ -1,0 +1,65 @@
+---
+title: "FinalDataCleaned"
+author: "ShreyAndreaSofieHarvey"
+date: "5/2/2022"
+output: html_document
+---
+
+THIS IS THE RMD FILE THAT MERGED OUR INDIVIDUALLY CLEANED DATA TO MAKE A FINAL DATASET THAT WE ARE USING
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+#importing merged dataset to merge further
+assessment = read.csv("~/projects/finalProject/shrey/assessment.csv")
+attendance_gradrate = read.csv("~/projects/finalProject/andrea/Attendance_gradrate.csv")
+removals_salaries = read.csv("~/projects/finalProject/harvey/Removals_and_Salaries.csv")
+enrollment = read.csv("~/projects/finalProject/sofie/EnrollmentData.csv")
+lunch = read.csv("~/projects/finalProject/sofie/LunchData.csv")
+```
+
+```{r}
+#deleting unnecessary cols in some datasets
+assessment = assessment[-c(1)]
+enrollment = enrollment[-c(1,3,15)]
+lunch = lunch[-c(1)]
+removals_salaries = removals_salaries[-c(1)]
+```
+
+
+```{r}
+#Standardizing col names and data types for merging
+
+colnames(enrollment)[1] = "District"
+colnames(enrollment)[4] = "Year"
+colnames(lunch)[3] = "Year"
+
+assessment$District <- as.character(assessment$District)
+attendance_gradrate$District <- as.character(attendance_gradrate$District)
+removals_salaries$District <- as.character(removals_salaries$District)
+enrollment$District <- as.character(enrollment$District)
+lunch$District <- as.character(lunch$District)
+
+```
+
+
+
+```{r}
+#merging all the data sets to make a final dataset
+IowaDataFinal = dplyr::inner_join(assessment, attendance_gradrate, by = c("District", "Year"))
+IowaDataFinal = dplyr::inner_join(IowaDataFinal, enrollment, by = c("District", "Year"))
+IowaDataFinal = dplyr::inner_join(IowaDataFinal, lunch, by = c("District", "Year"))
+IowaDataFinal = dplyr::inner_join(IowaDataFinal, removals_salaries, by = c("District", "Year"))
+```
+
+```{r}
+write.csv(IowaDataFinal, "~/projects/finalProject/IowaDataFinal.csv")
+
+```
+
+
+

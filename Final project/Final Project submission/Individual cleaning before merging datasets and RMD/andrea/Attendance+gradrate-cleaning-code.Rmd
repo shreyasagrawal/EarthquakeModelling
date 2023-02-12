@@ -1,0 +1,159 @@
+---
+title: "Attendance + Gradrate"
+author: "Andrea"
+date: "5/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(tidyr)
+require(dplyr)
+```
+
+
+Part 1: Graduation Rate Code
+
+```{r}
+#reading in all the files for gradrate
+grad1314 <- read.csv("~/Final Project/Grad Rate Files/Class of 2014 Four Year and Class of 2013 Five Year Graduation Rates and 2013-2014 Dropout Rates by District rev4-13-15.csv")
+grad1415 <- read.csv("~/Final Project/Grad Rate Files/Class of 2015 Four Year and Class of 2014 Five Year Graduation Rates and 2014-15 Dropout Rates by District (June 1, 2016).csv")
+grad1516 <- read.csv("~/Final Project/Grad Rate Files/2015-2016GraduationDropoutCombined.csv")
+grad1617 <- read.csv("~/Final Project/Grad Rate Files/2017GRDRcombined.csv")
+grad1718 <- read.csv("~/Final Project/Grad Rate Files/dr_gr_combined by district.csv")
+grad1819 <- read.csv("~/Final Project/Grad Rate Files/grdr_combied.csv")
+
+
+```
+
+
+```{r}
+#standardizing the district code column since we are merging by it
+grad1314$District <- as.character(grad1314$District)
+grad1415$District <- as.character(grad1415$District)
+grad1516$District <- as.character(grad1516$District)
+grad1617$District <- as.character(grad1617$District)
+grad1718$District <- as.character(grad1718$District)
+grad1819$District <- as.character(grad1819$District)
+
+```
+
+```{r}
+#deleting unnecesary columns: county, aea, district name, etc
+grad1314 <- grad1314[ -c(1, 3:6, 8:9, 11:14, 17:18) ]
+grad1415 <- grad1415[ -c(1, 3:6, 8:9, 11:14, 17:18) ]
+grad1516 <- grad1516[ -c(1, 3:6, 8:9, 11:14, 17:18) ]
+grad1617 <- grad1617[ -c(1:3, 5:7, 9:10, 12:15, 18) ]
+grad1718 <- grad1718[ -c(1:3, 5:7, 9:10, 12:15) ]
+grad1819 <- grad1819[ -c(1:3, 5:7, 9:10, 12:15) ]
+
+```
+
+```{r}
+#standardizing column names
+colnames(grad1314) <- c("District", "Grad-Rate-4-Year", "Grad-Rate-5-Year", "Enrollment-9-12", "Dropout-Rate-9-12")
+colnames(grad1415) <- c("District", "Grad-Rate-4-Year", "Grad-Rate-5-Year", "Enrollment-9-12", "Dropout-Rate-9-12")
+colnames(grad1516) <- c("District", "Grad-Rate-4-Year", "Grad-Rate-5-Year", "Enrollment-9-12", "Dropout-Rate-9-12")
+colnames(grad1617) <- c("District", "Grad-Rate-4-Year", "Grad-Rate-5-Year", "Enrollment-9-12", "Dropout-Rate-9-12")
+colnames(grad1718) <- c("District", "Grad-Rate-4-Year", "Grad-Rate-5-Year", "Enrollment-9-12", "Dropout-Rate-9-12")
+colnames(grad1819) <- c("District", "Grad-Rate-4-Year", "Grad-Rate-5-Year", "Enrollment-9-12", "Dropout-Rate-9-12")
+```
+
+```{r}
+#standardizing column types
+grad1314$`Grad-Rate-4-Year` <- as.double(grad1314$`Grad-Rate-4-Year`)
+grad1314$`Grad-Rate-5-Year` <- as.double(grad1314$`Grad-Rate-5-Year`)
+grad1314$`Enrollment-9-12` <- as.double(grad1314$`Enrollment-9-12`)
+grad1314$`Dropout-Rate-9-12`<- as.double(grad1314$`Dropout-Rate-9-12`)
+
+grad1415$`Grad-Rate-4-Year` <- as.double(grad1415$`Grad-Rate-4-Year`)
+grad1415$`Grad-Rate-5-Year` <- as.double(grad1415$`Grad-Rate-5-Year`)
+grad1415$`Enrollment-9-12` <- as.double(grad1415$`Enrollment-9-12`)
+grad1415$`Dropout-Rate-9-12`<- as.double(grad1415$`Dropout-Rate-9-12`)
+
+grad1516$`Grad-Rate-4-Year` <- as.double(grad1516$`Grad-Rate-4-Year`)
+grad1516$`Grad-Rate-5-Year` <- as.double(grad1516$`Grad-Rate-5-Year`)
+grad1516$`Enrollment-9-12` <- as.double(grad1516$`Enrollment-9-12`)
+grad1516$`Dropout-Rate-9-12`<- as.double(grad1516$`Dropout-Rate-9-12`)
+
+grad1617$`Grad-Rate-4-Year` <- as.double(grad1617$`Grad-Rate-4-Year`)
+grad1617$`Grad-Rate-5-Year` <- as.double(grad1617$`Grad-Rate-5-Year`)
+grad1617$`Enrollment-9-12` <- as.double(grad1617$`Enrollment-9-12`)
+grad1617$`Dropout-Rate-9-12`<- as.double(grad1617$`Dropout-Rate-9-12`)
+
+grad1718$`Grad-Rate-4-Year` <- as.double(grad1718$`Grad-Rate-4-Year`)
+grad1718$`Grad-Rate-5-Year` <- as.double(grad1718$`Grad-Rate-5-Year`)
+grad1718$`Enrollment-9-12` <- as.double(grad1718$`Enrollment-9-12`)
+grad1718$`Dropout-Rate-9-12`<- as.double(grad1718$`Dropout-Rate-9-12`)
+
+grad1819$`Grad-Rate-4-Year` <- as.double(grad1819$`Grad-Rate-4-Year`)
+grad1819$`Grad-Rate-5-Year` <- as.double(grad1819$`Grad-Rate-5-Year`)
+grad1819$`Enrollment-9-12` <- as.double(grad1819$`Enrollment-9-12`)
+grad1819$`Dropout-Rate-9-12`<- as.double(grad1819$`Dropout-Rate-9-12`)
+
+```
+
+
+```{r}
+#joining the data sets using bind_rows and bind_cols from dlpyr package
+
+gradrate <- bind_rows(bind_cols(grad1314, Year = "13-14"), bind_cols(grad1415, Year = "14-15"), bind_cols(grad1516, Year = "15-16"),
+                     bind_cols(grad1617, Year = "16-17"), bind_cols(grad1718, Year = "17-18"), bind_cols(grad1819, Year = "18-19"))
+
+```
+
+
+Part 2: Average Attendance Code
+
+```{r}
+#reading in all the files
+attendance1314 <- read.csv("~/Final Project/Avg Attendance Files/2013-2014 Iowa Public School District K-8 and K-12 Average Daily Attendance.csv")
+attendance1415 <- read.csv("~/Final Project/Avg Attendance Files/2014-2015 Iowa Public School District K-8 and K-12 Average Daily Attendance.csv")
+attendance1516 <- read.csv("~/Final Project/Avg Attendance Files/2015-2016 Iowa Public School District K-8 and K-12 Average Daily Attendance.csv")
+attendance1617 <- read.csv("~/Final Project/Avg Attendance Files/2016-2017 Iowa Public School District K-8 and K-12 Average Daily Attendance.csv")
+attendance1718 <- read.csv("~/Final Project/Avg Attendance Files/2017-2018 Iowa Public School District K-8 and K-12 Average Daily Attendance.csv")
+attendance1819 <- read.csv("~/Final Project/Avg Attendance Files/2018-2019 Iowa Public School District K-8 and K-12 Average Daily Attendance.csv")
+
+
+```
+
+
+```{r}
+#standardizing the district code column since we are merging by it
+attendance1314$District <- as.character(attendance1314$District)
+attendance1415$District <- as.character(attendance1415$District)
+attendance1516$District <- as.character(attendance1516$District)
+attendance1617$District <- as.character(attendance1617$District)
+attendance1718$District <- as.character(attendance1718$District)
+attendance1819$District <- as.character(attendance1819$District)
+
+```
+
+```{r}
+#deleting unnecesary columns: county, aea, district name, k8 count, k8 rate
+attendance1314 <- attendance1314[ -c(1:2, 4:6) ]
+attendance1415 <- attendance1415[ -c(1:2, 4:6) ]
+attendance1516 <- attendance1516[ -c(1:2, 4:6, 9:10) ]
+attendance1617 <- attendance1617[ -c(1:2, 4:6) ]
+attendance1718 <- attendance1718[ -c(1:2, 4:6) ]
+attendance1819 <- attendance1819[ -c(1:2, 4:6) ]
+
+```
+
+
+```{r}
+#joining the data sets using bind_rows and bind_cols from dlpyr package
+
+attendance <- bind_rows(bind_cols(attendance1314, Year = "13-14"), bind_cols(attendance1415, Year = "14-15"), bind_cols(attendance1516, Year = "15-16"),
+                         bind_cols(attendance1617, Year = "16-17"), bind_cols(attendance1718, Year = "17-18"), bind_cols(attendance1819, Year = "18-19"))
+
+```
+
+
+Part 3: Merging the two new files
+
+```{r}
+
+att.gradrate <- inner_join(attendance, gradrate, by = c("District", "Year"))
+
+```
